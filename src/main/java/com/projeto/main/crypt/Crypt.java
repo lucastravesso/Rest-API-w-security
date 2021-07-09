@@ -14,7 +14,7 @@ public class Crypt {
 	{
 		//cria variavel retorno que armazena a senha criptografada
 		String retorno = "";
-		//teste de update
+		//teste de updates
 		//import do messageDigest que traz funcionalidade de hash
 		MessageDigest md;
 		//tenta o codigo
