@@ -17,7 +17,7 @@ public class Crypt {
 		//teste de updates
 		//import do messageDigest que traz funcionalidade de hash
 		MessageDigest md;
-		//tenta o codigo
+		//tenta o codigoa
 		try {
 			//define o hash(digest) como MD-5 de criptografia
 			md = MessageDigest.getInstance("MD5");
