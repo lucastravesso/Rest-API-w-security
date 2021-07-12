@@ -57,14 +57,7 @@ public class AlunoController {
 	{
 		return service.deletar(id);
 	}
-	/*
-	@PutMapping("/atualizar-role/{id}")
-	@Transactional
-	public void atualizarRole(@PathVariable Integer id, @RequestBody @Valid RolesDTO dto) throws NotFoundException
-	{
-		service.atualizarAcesso(id, dto);
-	}
-	*/
+
 	@PutMapping("/atualizar-aluno/{id}")
 	@Transactional
 	public ResponseEntity<?> atualizar(@PathVariable Integer id, @RequestBody @Valid AlunoDTO dto)
@@ -80,6 +73,12 @@ public class AlunoController {
 	public ResponseEntity<?> loganAluno(@RequestParam(value ="nome", required = false) String nome,@RequestParam(value ="senha", required = false) String senha)
 	{
 		return service.logar(nome, senha);
+	}
+	@PutMapping("/mudar-acesso/{id}")
+	@Transactional
+	public ResponseEntity<?> mudarAcesso(@PathVariable Integer id, @RequestParam(value = "id_perfil", required = true) Integer id_perfil)
+	{
+		return service.atualizarPerfil(id, id_perfil);
 	}
 	
 }

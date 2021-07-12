@@ -1,6 +1,6 @@
 package com.projeto.main.dto;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -30,6 +30,6 @@ public class AlunoDTO {
 	@NotNull @NotEmpty @Length(max = 30)
 	private String senha;
 	private CursoDTO curso;	
-	private List<Perfil> perfil;
+	private Set<Perfil> perfil;
 
 }

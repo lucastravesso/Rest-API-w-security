@@ -1,8 +1,8 @@
 package com.projeto.main.entity;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,11 +47,10 @@ public class Aluno implements UserDetails {
 	private Curso curso;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
-	private List<Perfil> perfis = new ArrayList<>();
+	private Set<Perfil> perfis = new HashSet<>();
 
 	public Aluno (AlunoDTO dto, Curso curso) {
 
-		this.perfis = dto.getPerfil();
 		this.nome = dto.getNome();
 		this.email = dto.getEmail();
 		this.senha = new BCryptPasswordEncoder().encode(dto.getSenha());

@@ -1,8 +1,10 @@
 package com.projeto.main.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dozer.DozerBeanMapper;
@@ -17,8 +19,10 @@ import com.projeto.main.dto.AlunoCursoDTO;
 import com.projeto.main.dto.AlunoDTO;
 import com.projeto.main.entity.Aluno;
 import com.projeto.main.entity.Curso;
+import com.projeto.main.entity.Perfil;
 import com.projeto.main.repository.AlunoRepository;
 import com.projeto.main.repository.CursoRepository;
+import com.projeto.main.repository.PerfilRepository;
 import com.projeto.main.validator.Validator;
 
 
@@ -32,6 +36,9 @@ public class AlunoService {
 	private CursoRepository cursoRepository;
 
 	@Autowired
+	private PerfilRepository perfilRepository;
+	
+	@Autowired
 	private Validator valid;
 
 	private Mapper mapper = new DozerBeanMapper();
@@ -39,12 +46,17 @@ public class AlunoService {
 	public ResponseEntity<Aluno> insertAluno(AlunoDTO dto) {
 	
 		Curso curso = cursoRepository.findOneById(dto.getCurso().getId());
+		List<Perfil> perfil = perfilRepository.findAll();
+		Set<Perfil> role = perfil.stream().filter(p -> p.getNome().equals("ROLE_DEFAULT")).collect(Collectors.toSet());
 		boolean validate = valid.ValidateStudentsFields(dto);
 
 		if (!validate) {
 			if (Objects.nonNull(curso)) {
 				
 				Aluno aluno = new Aluno(dto, curso);
+				
+				aluno.setPerfis(role);
+				
 				repository.save(aluno);
 				return ResponseEntity.ok(aluno);
 			} else {
@@ -61,7 +73,7 @@ public class AlunoService {
 
 		if (aluno.isPresent() && Objects.nonNull(curso)) {
 
-			//aluno.get().setRole(dto.getRole());
+			aluno.get().setPerfis(dto.getPerfil());
 			aluno.get().setNome(dto.getNome());
 			aluno.get().setEmail(dto.getEmail());
 			aluno.get().setSenha(dto.getSenha());
@@ -72,19 +84,27 @@ public class AlunoService {
 		}
 		return ResponseEntity.notFound().build();
 	}
-	/*
-	public void atualizarAcesso(Integer id, RolesDTO dto) throws NotFoundException {
-
-		Aluno aluno = repository.findById(id).orElseThrow(() -> new NotFoundException("Aluno não encontrado . ."));
-
-		aluno.setRole(dto.getRole());
-	}*/
 	
+	public ResponseEntity<?> atualizarPerfil(Integer id, Integer id_perfil)
+	{
+		Optional<Aluno> aluno = repository.findById(id);
+		Optional<Perfil> perfil = perfilRepository.findById(id_perfil);
+		Set<Perfil> p = new HashSet<>();
+		p.add(perfil.get());
+		if (aluno.isPresent()) {
+			aluno.get().setPerfis(p);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+
 	public List<AlunoDTO> listar() {
 
 		List<Aluno> aluno = repository.findAll();
+
 		return aluno.stream().map(m -> {
 			AlunoDTO dto = mapper.map(m, AlunoDTO.class);
+			dto.setPerfil(m.getPerfis());
 			return dto;
 		}).collect(Collectors.toList());
 
